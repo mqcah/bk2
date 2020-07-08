@@ -1,7 +1,9 @@
+<div class="container">
+
 <div class="row">
 	<div class="col-xs-3">
 		<h2>User info</h2>
-		<%= render 'users/profile', user: @user %>
+		<%= render 'profile', user: @user %>
 
 		<h2>New book</h2>
 		<%= render 'books/newform', book: @book %>
@@ -24,7 +26,9 @@
 				<% @books.each do |book| %>
 				<tr>
 					<td>
+						<% if @book.user == current_user %>
 						<%= link_to user_path(book.user) do %>
+						<% end %>
 							<%= attachment_image_tag(book.user, :profile_image, :fill, 50, 50, fallback: "no-image-mini.jpg") %>
 						<% end %>
 					</td>
@@ -36,5 +40,6 @@
 		</table>
 		<!--books一覧 -->
 	</div>
+</div>
 </div>
 

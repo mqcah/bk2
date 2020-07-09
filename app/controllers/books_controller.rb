@@ -6,6 +6,7 @@ before_action :authenticate_user!, except: [:new]
     @book = Book.new
     @book = Book.find(params[:id])
     @user = @book.user
+    @book_comment = BookComment.new
   end
 
   def index

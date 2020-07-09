@@ -23,13 +23,77 @@
 					</td>
 					<td><%= link_to @book.title, book_path(@book) %></td>
 					<td><%= @book.body %></td>
-          <% if @book.user == current_user %>
-					<td><%= link_to "Edit", edit_book_path(@book), class: "btn-sm btn-success edit_book_#{@book.id}" %></td>
-					<td><%= link_to "Destroy", book_path(@book), method: :delete, data: {confirm: "本当に削除してもよろしいですか？"}, class: "btn-sm btn-danger destroy_book_#{@book.id}" %></td>
-				<% end %>
+
+           <!-- いいね機能　  -->
+           <td>
+            <% if @book.favorited_by?(current_user) %>
+<%= link_to book_favorites_path(@book), method: :delete do %>
+<span class="glyphicon glyphicon-heart" aria-hidden="true"></span><%= @book.favorites.count %> 
+<% end %>
+<% else %>
+<%= link_to book_favorites_path(@book), method: :post do %>
+                        <span class="glyphicon glyphicon-heart-empty" aria-hidden="true"></span><%= @book.favorites.count %> 
+<% end %>
+      <% end %>
+                     <% if @book.user == current_user%>
+                      <td>
+                       <%= link_to "Edit", edit_book_path(@book), class: "btn-sm btn-success edit_book_#{@book.id}" %>
+                      </td>
+                      <td>
+                        <%= link_to "Destroy", book_path(@book), method: :delete, data: {confirm: "本当に削除してもよろしいですか？"}, class: "btn-sm btn-danger destroy_book_#{@book.id}" %>
+                      </td>
+           　　　　　<% end %>
+              　　　　　　<span class="glyphincon glyphincon-heart" artis-hidden="true">コメント数:<%= @book.book_comments.count %></span>
+           
+           <!-- ここまでいいね機能 -->
+</td>
+           <!-- コメント機能 -->
+
+
+                  <div class="comment-list bt style-2" id="comments">
+
+                    <ol>
+ 
+                  </ol>
+                <!-- ここまで -->
+
+
+
         </tr>
 			</table>
-
+                           <% @book.book_comments.each do |book_comment| %>
+                          <li class="comment">
+                              <div class="comment-body bb">
+                                  <div class="comment-text">
+                                      <div class="comment-author clearfix">
+                                          <a href="#" class="link-author"><%= book_comment.user.name %></a>
+                                          <span class="comment-meta">
+                                            <span class="comment-date"><%= book_comment.created_at.strftime('%Y/%m/%d') %></span>
+                                          </span>
+                                      </div>
+                                      <div class="comment-entry"><%= book_comment.comment %></div>
+                                  </div>
+                              </div>
+                                                <!-- コメント削除 -->
+                  <% if book_comment.user == current_user %>
+                   <%= link_to "削除", book_book_comments_path(book_comment), method: :delete, class: "btn btn-danger" %>
+                  <% end %>
+                                                  <!-- コメント削除ここまで-->
+                          </li>
+                      <% end %>
+<%= form_for [@book, @book_comment] do |f| %>
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <%= f.text_area :comment, rows:'5', class: "form-control",placeholder: "コメントをここに" %>
+                        </div>
+                    </div>
+                    <%= f.submit "送信する", class: "btn btn-lg btn-base-1 mt-20 pull-right" %>
+                  <% end %>
+                                      <% if @book_comment.user == current_user %>
+                      <td>
+                       <button type="button" class="btn btn-danger"><%= link_to "削除", book_book_comment_path(@book, book_comment), method: :delete, remote: true, class: "btn btn-danger" %></button>
+                      </td>
+                      <% end %>
 	</div>
 </div>
 </div>

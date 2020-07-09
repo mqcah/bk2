@@ -5,6 +5,7 @@
 <h2>User info</h2>
 <%= render 'profile', user: current_user %>
 
+<%= render 'relationships/follow_button', user: current_user %>
 <h2>New book</h2>
 <%= render 'books/newform', book: @book %>
 </div>
@@ -24,8 +25,26 @@
 	<tbody>
 		<% @users.each do |user| %>
 		<tr>
-			<td class="col-xs-2"><%= attachment_image_tag(user, :profile_image, :fill, 50, 50, fallback: "no-image-mini.jpg") %></td>
-			<td class="col-xs-4"><%= user.name %></td>
+			<td><%= attachment_image_tag(user, :profile_image, :fill, 50, 50, fallback: "no-image-mini.jpg") %></td>
+			<td><%= user.name %></td>
+			<!-- follow fanction -->
+			<td>
+				<%= link_to "フォロー数:#{user.followings.count} ", followings_user_path(user) %>
+
+			      <%= link_to "　　　フォロー数:#{user.followers.count}", followers_user_path(user) %>
+<% unless current_user == user %>
+  <% if current_user.following?(user) %>
+<%= link_to relationship_path(user),method: :delete do%>
+　　　　フォローを外す
+    <% end %>
+  <% else %>
+  		<%= link_to relationships_path(user),method: :post do%>
+  		　　　　フォローする
+  <% end %>
+  <% end %>
+<% end %>
+</td>
+			<!-- f follow fanction -->
 			<td class="col-xs-6"><%= link_to "Show", user_path(user), class: "user_#{user.id}" %></td>
 		</tr>
 		<% end %>
@@ -34,4 +53,4 @@
 <!--users一覧 -->
 </div>
 </div>
-</div>	
+</div>
